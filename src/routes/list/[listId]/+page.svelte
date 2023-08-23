@@ -1,21 +1,18 @@
-<script>
+<script lang="ts">
+	import CreateTodoModal from "$lib/components/CreateTodoModal.svelte";
+	import TodoItem from "$lib/components/TodoItem.svelte";
 	import { lists } from "$lib/stores/lists";
     import { todos } from "$lib/stores/todos";
+	import { modalStore, type ModalSettings } from "@skeletonlabs/skeleton";
     import { ArrowLeftFromLine } from 'lucide-svelte';
 
     export let data;
-    
     $: list = $lists.find((l) => l.id === data.listId);
-    $: todoItems = $todos.get(data.listId) ?? [];
-
-    let addingTodo = false;
-    let todoInput = '';
-
-    const createTodo = () => {
-        todos.add(data.listId, todoInput);
-        addingTodo = false;
-        todoInput = '';
-    }
+    
+    const modal: ModalSettings = {
+        type: 'component',
+        component: { ref: CreateTodoModal, props: { listId: data.listId } },
+    };
 </script>
 
 <a href="/" class="flex gap-2 mb-5">
@@ -25,29 +22,16 @@
 
 <h2 class="text-2xl font-semibold">{list?.name}</h2>
 
-{#if addingTodo}
-    <form class="mt-4" on:submit|preventDefault={() => addingTodo = false}>
-        <input bind:value={todoInput} type="text" name="name" placeholder="Todo name" class="border border-gray-300 rounded px-2 py-1" />
-        <button 
-            type="submit"
-            class="bg-purple-500 hover:bg-purple-700 text-white text-sm font-medium py-2 px-3 rounded"
-            on:click={createTodo}
-        >
-            Create
-        </button>
-    </form>
-{/if}
-
 <div class="mt-4">
     <button 
-        class="bg-purple-500 hover:bg-purple-700 text-white font-light py-2 px-4 rounded"
-        on:click={() => addingTodo = !addingTodo}
+        class="btn variant-filled-primary"
+        on:click={() => modalStore.trigger(modal)}
     >
-        + Add todo
+        + Add
     </button>
-    <ul class="mt-3">
-        {#each todoItems as todo}
-            <li>{todo.name}</li>
+    <ul class="mt-6 space-y-3">
+        {#each $todos.get(data.listId) ?? [] as todo (todo.id)}
+            <TodoItem listId={data.listId} {todo} />
         {/each}
     </ul>
 </div>

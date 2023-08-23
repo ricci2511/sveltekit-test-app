@@ -2,12 +2,21 @@
     import '@skeletonlabs/skeleton/themes/theme-crimson.css';
     import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import '../app.postcss';
-    import { AppShell } from '@skeletonlabs/skeleton';
+    import { AppShell, Drawer, Modal } from '@skeletonlabs/skeleton';
+    import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+    import { storePopup } from '@skeletonlabs/skeleton';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Header from '$lib/components/Header.svelte';
+
+    storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
 
-<AppShell slotSidebarLeft="w-60 bg-surface-500/10 p-4 hidden md:block">
+<Drawer width="w-80" rounded="rounded-sm">
+    <Sidebar />
+</Drawer>
+<Modal />
+
+<AppShell slotSidebarLeft="w-60 bg-surface-500/10 hidden md:block">
 	<svelte:fragment slot="header">
         <Header />
     </svelte:fragment>

@@ -1,37 +1,26 @@
-<script>
-    import ListsTable from "$lib/components/ListsTable.svelte";
+<script lang="ts">
+	import CreateListModal from "$lib/components/CreateListModal.svelte";
+    import ListCard from "$lib/components/ListCard.svelte";
     import { lists } from "$lib/stores/lists";
+    import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 
-    let addingList = false;
-    let listInput = '';
-
-    const createList = () => {
-        lists.add(listInput);
-        listInput = '';
-        addingList = false;
-    }
+    const modal: ModalSettings = {
+        type: 'component',
+        component: { ref: CreateListModal },
+    };
 </script>
 
 <h2 class="text-2xl font-semibold">Lists</h2>
 <div class="mt-4">
     <button 
-        class="bg-purple-500 hover:bg-purple-700 text-white font-light py-2 px-4 rounded"
-        on:click={() => addingList = !addingList}
+        class="btn variant-filled-primary"
+        on:click={() => modalStore.trigger(modal)}
     >
         + Add
     </button>
-    {#if addingList}
-        <form class="mt-4" on:submit|preventDefault={() => addingList = false}>
-            <input bind:value={listInput} type="text" name="name" placeholder="List name" class="border border-gray-300 rounded px-2 py-1" />
-            <button 
-                type="submit"
-                class="bg-purple-500 hover:bg-purple-700 text-white text-sm font-medium py-2 px-3 rounded"
-                on:click={createList}
-            >
-                Create
-            </button>
-        </form>
-    {/if}
-
-    <!-- TODO: display lists here -->
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 grid-flow-row gap-x-4 gap-y-8">
+        {#each $lists as list (list.id)}
+            <ListCard {list} />
+        {/each}
+    </div>
 </div>

@@ -8,5 +8,8 @@ module.exports = {
 	theme: {
 		extend: {}
 	},
-	plugins: [...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')()]
+	plugins: [
+		...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')(),
+		require('@tailwindcss/forms')
+	]
 };

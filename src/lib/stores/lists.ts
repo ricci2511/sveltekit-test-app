@@ -1,9 +1,12 @@
 import { writable } from 'svelte/store';
 import { todos } from './todos';
 
+export type Priority = 'low' | 'medium' | 'high';
+
 export interface List {
 	id: string;
 	name: string;
+	priority: Priority;
 }
 
 const listStore = () => {
@@ -11,9 +14,9 @@ const listStore = () => {
 
 	return {
 		subscribe,
-		add: (name: string) =>
+		add: (name: string, priority: Priority) =>
 			update((lists) => {
-				const newList: List = { id: crypto.randomUUID(), name };
+				const newList: List = { id: crypto.randomUUID(), name, priority };
 				todos.init(newList.id); // Initialize todos array for the new list
 				return [...lists, newList];
 			}),

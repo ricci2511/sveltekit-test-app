@@ -1,24 +1,32 @@
 <script>
+	import { drawerStore } from "@skeletonlabs/skeleton";
 	import { HomeIcon, InfoIcon } from "lucide-svelte";
+    
+    const navEntries = [
+        {
+            name: "Home",
+            icon: HomeIcon,
+            href: "/",
+        },
+        {
+            name: "About",
+            icon: InfoIcon,
+            href: "/about",
+        },
+    ];
 </script>
 
-<nav class="list-nav">
+<nav class="list-nav p-4">
 	<ul>
-		<li>
-			<a href="/">
-                <span class="badge bg-primary-500">
-                    <HomeIcon class="w-5 h-5" />
-                </span>
-                <span class="flex-auto">Home</span>
-            </a>
-		</li>
-		<li>
-			<a href="/about">
-                <span class="badge bg-primary-500">
-                    <InfoIcon class="w-5 h-5" />
-                </span>
-                <span class="flex-auto">About</span>
-            </a>
-		</li>
+        {#each navEntries as { name, icon, href}}
+            <li class="mb-2">
+                <a href={href} on:click={() => drawerStore.close()}>
+                    <span class="badge variant-ghost-primary">
+                        <svelte:component this={icon} class="w-4 h-4" />
+                    </span>
+                    <span class="flex-auto">{name}</span>
+                </a>
+            </li>
+        {/each}
 	</ul>
 </nav>
