@@ -17,7 +17,7 @@
 <Modal>
 	<svelte:fragment slot="header">Create todo</svelte:fragment>
 	<svelte:fragment slot="main">
-		<TodoForm id="createTodoForm" action="?/create" {onSubmit} />
+		<TodoForm id="createTodoForm" action="?/create" submitCb={onSubmit} />
 	</svelte:fragment>
 	<svelte:fragment slot="footer">
 		<button class="btn variant-filled-primary" type="submit" form="createTodoForm"> Create </button>

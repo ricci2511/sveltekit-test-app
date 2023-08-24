@@ -11,7 +11,6 @@
 	$: remove = () => todos.delete(listId, id);
 	$: toggleDone = () => todos.update(listId, { id, done: !done });
 
-	// TODO: Add validation
 	const onSubmit = (formData: TodoFormData) => {
 		const { name, deadline } = formData;
 		todos.update(listId, { id, name, deadline });
@@ -25,7 +24,12 @@
 	</div>
 	<div>
 		<EditTodoPopup id={`edit-todo-${id}`}>
-			<TodoForm id={`edit-todo-form-${id}`} action="?/update" formData={todo} {onSubmit} />
+			<TodoForm
+				id={`edit-todo-form-${id}`}
+				action="?/update"
+				submitCb={onSubmit}
+				initialData={todo}
+			/>
 			<div class="flex justify-end space-x-1 mt-4">
 				<button class="btn variant-outline-tertiary" type="button"> Cancel </button>
 				<button class="btn variant-filled-primary" type="submit" form={`edit-todo-form-${id}`}>
