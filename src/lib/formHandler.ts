@@ -49,13 +49,21 @@ export function formHandler<T extends ZodObject<ZodRawShape>>(
 			valid = validateForm(fd);
 			if (valid) onSubmit(fd);
 		})();
+
 		// After unsuccessful validation, subscribe to formData changes, validating on the fly
 		if (!valid && !autoValidateSubscribtion) {
-			autoValidateSubscribtion = formData.subscribe((fd) => (valid = validateForm(fd)));
+			autoValidateSubscribtion = formData.subscribe((fd) => {
+				valid = validateForm(fd);
+				// Once valid, unsubscribe to avoid unnecessary validateForm calls
+				if (valid) {
+					autoValidateSubscribtion?.();
+					autoValidateSubscribtion = null;
+				}
+			});
 		}
 	};
 
-	// Cleanup possible existing autoValidateSubscribtion
+	// Cleanup autoValidateSubscribtion if present
 	onDestroy(() => autoValidateSubscribtion?.());
 
 	return {
