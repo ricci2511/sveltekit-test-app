@@ -4,7 +4,7 @@
 	import { lists } from '$lib/stores/lists';
 	import { todos } from '$lib/stores/todos';
 	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
-	import { ArrowLeftFromLine } from 'lucide-svelte';
+	import { ArrowLeftFromLine, Plus } from 'lucide-svelte';
 
 	export let data;
 	$: list = $lists.find((l) => l.id === data.listId);
@@ -24,7 +24,8 @@
 
 <div class="mt-4">
 	<button class="btn variant-filled-primary" on:click={() => modalStore.trigger(modal)}>
-		+ Add
+		<span>Add</span>
+		<Plus class="w-4 h-4 ml-2" />
 	</button>
 	<ul class="mt-6 space-y-3">
 		{#each $todos.get(data.listId) ?? [] as todo (todo.id)}

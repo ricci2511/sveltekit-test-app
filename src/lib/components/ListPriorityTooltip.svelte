@@ -9,7 +9,8 @@
 	const popupSettings: PopupSettings = {
 		target: id,
 		event: 'hover',
-		placement: 'top'
+		placement: 'top',
+		middleware: { offset: 24 }
 	};
 
 	const prioColors: Record<Priority, string> = {
@@ -23,9 +24,9 @@
 </script>
 
 <!-- Trigger -->
-<button class="absolute top-0 right-3 btn-icon [&>*]:pointer-events-none" use:popup={popupSettings}>
+<div class="[&>*]:pointer-events-none" use:popup={popupSettings}>
 	<BadgeAlert class="w-5 h-5" />
-</button>
+</div>
 <!-- Content  -->
 <div class={`card px-2 py-1.5 w-32 ${color}`} data-popup={id}>
 	<p class="text-sm text-center font-semibold">{text}</p>

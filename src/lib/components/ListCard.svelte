@@ -1,14 +1,20 @@
 <script lang="ts">
-	import type { List } from '$lib/stores/lists';
+	import { lists, type List } from '$lib/stores/lists';
 	import ListPriorityTooltip from './ListPriorityTooltip.svelte';
+	import ListDropdown from './ListDropdown.svelte';
 
 	export let list: List;
 	const { id, name, priority } = list;
+
+	$: deleteList = () => lists.delete(id);
 </script>
 
-<a href={`/list/${id}`} class="card p-4 relative hover:bg-surface-300 dark:hover:bg-surface-600">
-	<ListPriorityTooltip id={`tooltip-${id}`} {priority} />
-	<header class="card-header">
+<div class="card flex p-4 relative hover:bg-surface-300 dark:hover:bg-surface-600">
+	<a href={`/list/${id}`} class="w-full">
 		{name}
-	</header>
-</a>
+	</a>
+	<div class="flex flex-col space-y-3">
+		<ListPriorityTooltip id={`tooltip-${id}`} {priority} />
+		<ListDropdown id={`dropdown-${id}`} {deleteList} />
+	</div>
+</div>
