@@ -1,4 +1,5 @@
-import { writable } from 'svelte/store';
+import { onDestroy } from 'svelte';
+import { writable, type Unsubscriber } from 'svelte/store';
 import { z, ZodObject, ZodError, type ZodRawShape } from 'zod';
 
 export type FormErrors<T> = Record<keyof T, string>;
@@ -16,11 +17,12 @@ export function formHandler<T extends ZodObject<ZodRawShape>>(
 ) {
 	type SchemaData = z.infer<T>;
 
-	// If no initial values are provided, initiaze the form data with falsy values
 	const formData = writable<SchemaData>(initialValues || ({} as SchemaData));
 	const formErrors = writable<FormErrors<SchemaData>>({} as FormErrors<SchemaData>);
+	let valid = false;
+	let autoValidateSubscribtion: Unsubscriber | null = null;
 
-	const validForm = (formData: SchemaData): boolean => {
+	const validateForm = (formData: SchemaData): boolean => {
 		try {
 			schema.parse(formData);
 			// Reset on succesful schema validation
@@ -42,12 +44,19 @@ export function formHandler<T extends ZodObject<ZodRawShape>>(
 	};
 
 	const handleSubmit = (onSubmit: (formData: SchemaData) => void) => () => {
-		const unsubscribe = formData.subscribe((fd) => {
-			if (!validForm(fd)) return;
-			onSubmit(fd);
-		});
-		unsubscribe();
+		// Validate and immediately unsubscribe to prevent calling onSubmit as soon as the form is valid
+		formData.subscribe((fd) => {
+			valid = validateForm(fd);
+			if (valid) onSubmit(fd);
+		})();
+		// After unsuccessful validation, subscribe to formData changes, validating on the fly
+		if (!valid && !autoValidateSubscribtion) {
+			autoValidateSubscribtion = formData.subscribe((fd) => (valid = validateForm(fd)));
+		}
 	};
+
+	// Cleanup possible existing autoValidateSubscribtion
+	onDestroy(() => autoValidateSubscribtion?.());
 
 	return {
 		formData,
